@@ -1,0 +1,3 @@
+[workspace]
+resolver = "2"
+members = ["primitive_ffi", "use_pyo3"]
