@@ -5,8 +5,9 @@ edition = "2021"
 
 [lib]
 name = "use_pyo3"
+crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = {version = "*",features = ["extension-module"]}
+pyo3 = { version = "*", features = ["extension-module"] }
 polars = "*"
 numpy = "*"
