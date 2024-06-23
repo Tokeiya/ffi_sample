@@ -4,6 +4,9 @@ class TimeSpan:
     def __init__(self, value: int):
         raise NotImplementedError()
 
+    def is_negative(self) -> bool:
+        raise NotImplementedError()
+
     def total_nano_seconds(self) -> float:
         raise NotImplementedError()
 
