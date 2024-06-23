@@ -1,16 +1,12 @@
 import ctypes
+from time import monotonic_ns
+
 import use_pyo3
 from random import randint
 
 
 def main():
-    print(randint(0, 999))
-    print(randint(0, 999))
-    print(randint(0, 999))
-    print(randint(0, 999))
-    print(randint(0, 59))
-    print(randint(0, 59))
-    print(randint(0, 100))
+    print(monotonic_ns())
 
 
 if __name__ == "__main__":
