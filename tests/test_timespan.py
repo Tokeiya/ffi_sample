@@ -1,5 +1,5 @@
 import pytest
-from chrono import TimeSpan
+from chrono.timespan import TimeSpan
 from random import randint
 from dataclasses import dataclass
 
@@ -15,67 +15,57 @@ class Sample:
     minutes: int
     hour: int
 
-    def total_nano_seconds(self) -> float:
+    def total_nano_seconds(self) -> int:
         tmp = (self.nano + self.micro * 1_000 + self.milli * 1_000_000
                + self.sec * 1_000_000_000 + self.minutes * 60_000_000_000 + self.hour * 3_600_000_000_000)
 
         return -tmp if self.is_negative else tmp
 
     def total_micro_seconds(self) -> float:
-        tmp = (self.nano / 1_000 + self.micro + self.milli * 1_000 + self.sec
-               * 1_000_000 + self.minutes * 60_000_000 + self.hour * 3_600_000_000)
-
-        return -tmp if self.is_negative else tmp
+        return self.total_nano_seconds() / 1_000
 
     def total_milli_seconds(self) -> float:
-        tmp = (self.nano / 1_000_000 + self.micro / 1_000 + self.milli
-               + self.sec * 1_000 + self.minutes * 60_000 + self.hour * 3_600_000)
-
-        return -tmp if self.is_negative else tmp
+        return self.total_nano_seconds() / 1_000_000
 
     def total_seconds(self) -> float:
-        tmp = (self.nano / 1_000_000_000 + self.micro / 1_000_000 + self.milli / 1_000
-               + self.sec + self.minutes * 60 + self.hour * 3_600)
-
-        return -tmp if self.is_negative else tmp
+        return self.total_nano_seconds() / 1_000_000_000
 
     def total_minutes(self) -> float:
-        tmp = (self.nano / 60_000_000_000 + self.micro / 60_000_000 + self.milli / 60_000 + self.sec / 60
-               + self.minutes + self.hour * 60)
-
-        return -tmp if self.is_negative else tmp
+        return self.total_nano_seconds() / 60_000_000_000
 
     def total_hours(self) -> float:
-        return (self.nano / 3_600_000_000_000 + self.micro / 3_600_000_000 + self.milli / 3_600_000
-                + self.sec / 3_600 + self.minutes / 60 + self.hour)
+        return self.total_nano_seconds() / 3_600_000_000_000
 
 
 class TestTimeSpan:
     @pytest.fixture
     def random_positive_sample(self) -> Sample:
-        nano = randint(0, 999)
-        micro = randint(0, 999)
-        milli = randint(0, 999)
-        sec = randint(0, 59)
-        minutes = randint(0, 59)
-        hour = randint(0, 23)
+        nano = 82
+        micro = 679
+        milli = 394
+        sec = 12
+        minutes = 45
+        hour = 42
 
-        total_nano = nano + micro * 1_000 + milli * 1_000_000 + sec * 1_000_000_000
+        total_nano = (nano + micro * 1_000 + milli * 1_000_000 + sec * 1_000_000_000
+                      + minutes * 60_000_000_000 + hour * 3_600_000_000_000)
+
         fixture = TimeSpan(total_nano)
-        return Sample(fixture, nano, micro, milli, sec, minutes, hour)
+        return Sample(fixture, False, nano, micro, milli, sec, minutes, hour)
 
     @pytest.fixture
     def random_negative_sample(self) -> Sample:
-        nano = randint(0, 999)
-        micro = randint(0, 999)
-        milli = randint(0, 999)
-        sec = randint(0, 59)
-        minutes = randint(0, 59)
-        hour = randint(0, 23)
+        nano = 488
+        micro = 825
+        milli = 437
+        sec = 59
+        minutes = 44
+        hour = 88
 
-        total_nano = -(nano + micro * 1_000 + milli * 1_000_000 + sec * 1_000_000_000)
+        total_nano = -(nano + micro * 1_000 + milli * 1_000_000 + sec * 1_000_000_000
+                       + minutes * 60_000_000_000 + hour * 3_600_000_000_000)
         fixture = TimeSpan(total_nano)
-        return Sample(fixture, nano, micro, milli, sec, minutes, hour)
+        return Sample(fixture, True, nano, micro, milli, sec, minutes, hour)
 
     @pytest.fixture
     def large(self) -> (TimeSpan, int):
@@ -84,6 +74,12 @@ class TestTimeSpan:
     @pytest.fixture
     def small(self) -> (TimeSpan, int):
         return TimeSpan(100), 100
+
+    def test_is_negative(self, random_positive_sample: Sample, random_negative_sample: Sample):
+        assert random_positive_sample.fixture.is_negative() is False
+        assert random_negative_sample.fixture.is_negative() is True
+        assert random_positive_sample.is_negative is False
+        assert random_negative_sample.is_negative is True
 
     def test_total_nano_seconds(self, random_positive_sample: Sample, random_negative_sample: Sample):
         assert random_positive_sample.fixture.total_nano_seconds() == random_positive_sample.total_nano_seconds()
@@ -110,28 +106,28 @@ class TestTimeSpan:
         assert random_negative_sample.fixture.total_hours() == random_negative_sample.total_hours()
 
     def test_nano_seconds(self, random_positive_sample: Sample, random_negative_sample: Sample):
+        assert -random_negative_sample.fixture.nano_seconds() == random_negative_sample.nano
         assert random_positive_sample.fixture.nano_seconds() == random_positive_sample.nano
-        assert random_negative_sample.fixture.nano_seconds() == random_negative_sample.nano
 
     def test_micro_seconds(self, random_positive_sample: Sample, random_negative_sample: Sample):
+        assert -random_negative_sample.fixture.micro_seconds() == random_negative_sample.micro
         assert random_positive_sample.fixture.micro_seconds() == random_positive_sample.micro
-        assert random_negative_sample.fixture.micro_seconds() == random_negative_sample.micro
 
     def test_milli_seconds(self, random_positive_sample: Sample, random_negative_sample: Sample):
         assert random_positive_sample.fixture.milli_seconds() == random_positive_sample.milli
-        assert random_negative_sample.fixture.milli_seconds() == random_negative_sample.milli
+        assert -random_negative_sample.fixture.milli_seconds() == random_negative_sample.milli
 
     def test_seconds(self, random_positive_sample: Sample, random_negative_sample: Sample):
         assert random_positive_sample.fixture.seconds() == random_positive_sample.sec
-        assert random_negative_sample.fixture.seconds() == random_negative_sample.sec
+        assert -random_negative_sample.fixture.seconds() == random_negative_sample.sec
 
     def test_minutes(self, random_positive_sample: Sample, random_negative_sample: Sample):
         assert random_positive_sample.fixture.minutes() == random_positive_sample.minutes
-        assert random_negative_sample.fixture.minutes() == random_negative_sample.minutes
+        assert -random_negative_sample.fixture.minutes() == random_negative_sample.minutes
 
     def test_hours(self, random_positive_sample: Sample, random_negative_sample: Sample):
         assert random_positive_sample.fixture.hours() == random_positive_sample.hour
-        assert random_negative_sample.fixture.hours() == random_negative_sample.hour
+        assert -random_negative_sample.fixture.hours() == random_negative_sample.hour
 
     def test_add(self):
         x = TimeSpan(1_000)

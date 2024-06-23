@@ -2,67 +2,78 @@ class TimeSpan:
     _nano: int
 
     def __init__(self, value: int):
-        raise NotImplementedError()
+        self._nano = value
 
     def is_negative(self) -> bool:
-        raise NotImplementedError()
+        return self._nano < 0
 
     def total_nano_seconds(self) -> float:
-        raise NotImplementedError()
+        return self._nano
 
     def total_micro_seconds(self) -> float:
-        raise NotImplementedError()
+        return self._nano / 1_000
 
     def total_milli_seconds(self) -> float:
-        raise NotImplementedError()
+        return self._nano / 1_000_000
 
     def total_seconds(self) -> float:
-        raise NotImplementedError()
+        return self._nano / 1_000_000_000
 
     def total_minutes(self) -> float:
-        raise NotImplementedError()
+        return self._nano / 60_000_000_000
 
     def total_hours(self) -> float:
-        raise NotImplementedError()
+        return self._nano / 3_600_000_000_000
 
     def nano_seconds(self) -> int:
-        raise NotImplementedError()
+        piv = abs(self._nano)
+        tmp = piv - ((piv // 1_000) * 1_000)
+        return -tmp if self.is_negative() else tmp
 
     def micro_seconds(self) -> int:
-        raise NotImplementedError()
+        piv = abs(self._nano) // 1_000
+        tmp = piv - ((piv // 1_000) * 1_000)
+        return -tmp if self.is_negative() else tmp
 
     def milli_seconds(self) -> int:
-        raise NotImplementedError()
+        piv = abs(self._nano) // 1_000_000
+        tmp = piv - ((piv // 1_000) * 1_000)
+        return -tmp if self.is_negative() else tmp
 
     def seconds(self) -> int:
-        raise NotImplementedError()
+        sec = abs(self._nano) // 1_000_000_000
+        tmp = sec - ((sec // 60) * 60)
+        return -tmp if self.is_negative() else tmp
 
     def minutes(self) -> int:
-        raise NotImplementedError()
+        minutes = abs(self._nano) // 60_000_000_000
+        tmp = minutes - ((minutes // 60) * 60)
+        return -tmp if self.is_negative() else tmp
 
     def hours(self) -> int:
-        raise NotImplementedError()
+        hours = abs(self._nano) // 3_600_000_000_000
+        return -hours if self.is_negative() else hours
 
     def __add__(self, other: 'TimeSpan') -> 'TimeSpan':
-        raise NotImplementedError()
+        return TimeSpan(self._nano + other._nano)
 
     def __sub__(self, other: 'TimeSpan') -> 'TimeSpan':
-        raise NotImplementedError()
+        return TimeSpan(self._nano - other._nano)
 
     def __eq__(self, other: 'TimeSpan') -> bool:
-        raise NotImplementedError()
+        return self._nano == other._nano
 
     def __ne__(self, other: 'TimeSpan') -> bool:
-        raise NotImplementedError()
+        return self._nano != other._nano
 
     def __lt__(self, other: 'TimeSpan') -> bool:
-        raise NotImplementedError()
+        return self._nano < other._nano
 
     def __le__(self, other: 'TimeSpan') -> bool:
-        raise NotImplementedError()
+        return self._nano <= other._nano
 
     def __gt__(self, other: 'TimeSpan') -> bool:
-        raise NotImplementedError()
+        return self._nano > other._nano
 
     def __ge__(self, other: 'TimeSpan') -> bool:
-        raise NotImplementedError()
+        return self._nano >= other._nano
