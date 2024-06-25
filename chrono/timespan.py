@@ -7,7 +7,7 @@ class TimeSpan:
     def is_negative(self) -> bool:
         return self._nano < 0
 
-    def total_nano_seconds(self) -> float:
+    def total_nano_seconds(self) -> int:
         return self._nano
 
     def total_micro_seconds(self) -> float:
@@ -53,6 +53,9 @@ class TimeSpan:
     def hours(self) -> int:
         hours = abs(self._nano) // 3_600_000_000_000
         return -hours if self.is_negative() else hours
+
+    def copy(self) -> 'TimeSpan':
+        return TimeSpan(self._nano)
 
     def __add__(self, other: 'TimeSpan') -> 'TimeSpan':
         return TimeSpan(self._nano + other._nano)

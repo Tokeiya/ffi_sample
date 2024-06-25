@@ -214,3 +214,11 @@ class TestTimeSpan:
         assert (x >= z)
         assert (x >= x)
         assert not (z >= x)
+
+    def test_copy(self):
+        x = TimeSpan(500)
+        y = x.copy()
+
+        x._nano = 0
+        assert x.total_nano_seconds() == 0
+        assert y.total_nano_seconds() == 500
