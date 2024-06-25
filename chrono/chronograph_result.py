@@ -5,6 +5,6 @@ from .timespan import TimeSpan
 
 @dataclass(frozen=True)
 class Result:
+    elapsed: TimeSpan
     recent: Status
     current: Status
-    elapsed: TimeSpan
