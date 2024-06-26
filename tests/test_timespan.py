@@ -223,6 +223,23 @@ class TestTimeSpan:
         assert not (x > x)
         assert not (z > x)
 
+    def test_mul(self):
+        x = TimeSpan(100)
+        assert x * 2 == TimeSpan(200)
+        assert x * -2 == TimeSpan(-200)
+        assert x * -1.25 == TimeSpan(-125)
+        assert x * 1.25 == TimeSpan(125)
+
+    def test_truediv(self):
+        x = TimeSpan(1000)
+        y = TimeSpan(125)
+        assert x / y == 8
+        assert x / TimeSpan(-125) == -8
+        assert TimeSpan(-1000) / TimeSpan(-125) == 8
+
+        assert x / 8 == y
+        assert x / -8 == TimeSpan(-125)
+
     def test_ge(self):
         x = TimeSpan(1_000)
         y = TimeSpan(1_000)

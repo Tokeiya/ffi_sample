@@ -1,3 +1,6 @@
+from typing import Union
+
+
 def from_seconds(value: float) -> 'TimeSpan':
     nano = int(value * 1_000_000_000)
     return TimeSpan(nano)
@@ -72,6 +75,19 @@ class TimeSpan:
 
     def __sub__(self, other: 'TimeSpan') -> 'TimeSpan':
         return TimeSpan(self._nano - other._nano)
+
+    def __mul__(self, other: float) -> 'TimeSpan':
+        return TimeSpan(int(self._nano * other))
+
+    def __truediv__(self, other: Union[float, 'TimeSpan']) -> Union[float, 'TimeSpan']:
+        if isinstance(other, float):
+            return TimeSpan(int(self._nano / other))
+        elif isinstance(other, int):
+            return TimeSpan(int(self._nano / other))
+        elif isinstance(other, TimeSpan):
+            return self._nano / other._nano
+        else:
+            raise TypeError
 
     def __eq__(self, other: 'TimeSpan') -> bool:
         return self._nano == other._nano
