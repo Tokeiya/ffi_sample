@@ -3,6 +3,10 @@ from python_packages.chrono.timespan import TimeSpan, from_seconds, from_milli_s
 from dataclasses import dataclass
 
 
+def assert_str(ns: int, expected: str):
+    assert str(TimeSpan(ns)) == expected
+
+
 @dataclass(frozen=True)
 class Sample:
     fixture: TimeSpan
@@ -258,3 +262,20 @@ class TestTimeSpan:
         x._nano = 0
         assert x.total_nano_seconds() == 0
         assert y.total_nano_seconds() == 500
+
+    def test_str(self):
+        assert_str(0, '000 ns')
+        assert_str(1, '001 ns')
+        assert_str(-1, '-001 ns')
+
+        assert_str(1000, '001.000 μs')
+        assert_str(-1000, '-001.000 μs')
+
+        assert_str(1_000_000, '001.000 ms')
+        assert_str(-1_000_000, '-001.000 ms')
+
+        assert_str(1_000_000_000, '001.000 sec')
+        assert_str(-1_000_000_000, '-001.000 sec')
+
+        assert_str(63_000_000_000, '00:01:03.000')
+        assert_str(-63_000_000_000, '-00:01:03.000')

@@ -106,3 +106,20 @@ class TimeSpan:
 
     def __ge__(self, other: 'TimeSpan') -> bool:
         return self._nano >= other._nano
+
+    def __str__(self) -> str:
+        tmp = abs(self._nano)
+        sign = '-' if self._nano < 0 else ''
+
+        # ns scale?
+        if tmp // 1_000 == 0:
+            return f'{sign}{abs(self._nano):03d} ns'
+        elif tmp // 1_000_000 == 0:
+            return f'{sign}{abs(self.total_micro_seconds()):07.3f} μs'
+        elif tmp // 1_000_000_000 == 0:
+            return f'{sign}{abs(self.total_milli_seconds()):07.3f} ms'
+        elif tmp // 60_000_000_000 == 0:
+            return f'{sign}{abs(self.total_seconds()):07.3f} sec'
+        else:
+            return (f'{sign}{abs(self.hours()):02d}:{abs(self.minutes()):02d}:{abs(self.seconds()):02d}.'
+                    f'{abs(self.milli_seconds()):03d}')

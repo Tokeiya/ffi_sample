@@ -5,9 +5,10 @@ from python_packages.chrono import MonotonicChronograph
 
 from typing import Callable, Any, List, Tuple
 import math
+from .benchmark_result import BenchmarkResult
 
 
-def run_benchmark(bench: Callable[[], Any], category: str, iteration: int) -> List[Tuple[str, 'TimeSpan']]:
+def run_benchmark(bench: Callable[[], Any], category: str, iteration: int, n: int) -> List['BenchmarkResult']:
     result = []
 
     if iteration <= 0:
@@ -20,7 +21,7 @@ def run_benchmark(bench: Callable[[], Any], category: str, iteration: int) -> Li
         bench()
         ret = chrono.stop()
         print(f'{i} {category} {ret.elapsed.total_milli_seconds()}')
-        result.append((category, ret.elapsed))
+        result.append(BenchmarkResult(category, n, ret.elapsed))
 
     return result
 
@@ -66,10 +67,24 @@ def measurement(target: Callable[[int], Any], threshold: 'TimeSpan') -> int:
 
     if not flg:
         raise RuntimeWarning('No solution')
-
     return iteration
 
 
-def run_autofit_benchmark(target: Callable[[int], Any], threshold: 'TimeSpan', env: str, iteration: int) -> List[
-    Tuple[str, str, int, 'TimeSpan']]:
-    pass
+def run_autofit_benchmark(target: Callable[[int], Any],
+                          threshold: 'TimeSpan', env: str, category: str, iteration: int) \
+        -> List[Tuple[str, str, int, 'TimeSpan']]:
+    cnt = measurement(target, threshold)
+
+    result = []
+
+    chrono = MonotonicChronograph()
+
+    for i in range(iteration):
+        chrono.restart()
+        target(cnt)
+        elapsed = chrono.stop().elapsed
+        print(f'{i} {cnt} {env} {category} {elapsed.total_milli_seconds()}')
+
+        result.append((env, category, cnt, elapsed))
+
+    return result
