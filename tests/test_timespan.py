@@ -1,6 +1,5 @@
 import pytest
-from chrono.timespan import TimeSpan
-from random import randint
+from python_packages.chrono.timespan import TimeSpan
 from dataclasses import dataclass
 
 

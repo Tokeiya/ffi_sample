@@ -1,10 +1,8 @@
-from chrono.timespan import TimeSpan
-from chrono.monotonic_chronograph import MonotonicChronograph
+from python_packages.chrono.timespan import TimeSpan
+from python_packages.chrono.monotonic_chronograph import MonotonicChronograph
 import unittest.mock as mock
-from pytest import fixture
-from chrono.chronograph_status import Status
-from chrono.chronograph_result import Result
-import time
+from python_packages.chrono.chronograph_status import Status
+from python_packages.chrono.chronograph_result import Result
 
 
 def assert_result(actual: Result, elapsed: TimeSpan, recent: Status, current: Status):
