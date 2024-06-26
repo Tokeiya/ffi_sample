@@ -1,3 +1,13 @@
+def from_seconds(value: float) -> 'TimeSpan':
+    nano = int(value * 1_000_000_000)
+    return TimeSpan(nano)
+
+
+def from_milli_seconds(value: float) -> 'TimeSpan':
+    nano = int(value * 1_000_000)
+    return TimeSpan(nano)
+
+
 class TimeSpan:
     _nano: int
 

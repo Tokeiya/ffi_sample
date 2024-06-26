@@ -1,5 +1,5 @@
 import pytest
-from python_packages.chrono.timespan import TimeSpan
+from python_packages.chrono.timespan import TimeSpan, from_seconds, from_milli_seconds
 from dataclasses import dataclass
 
 
@@ -34,6 +34,26 @@ class Sample:
 
     def total_hours(self) -> float:
         return self.total_nano_seconds() / 3_600_000_000_000
+
+
+def test_from_seconds():
+    actual = from_seconds(1.25)
+    assert actual.total_seconds() == 1.25
+    assert actual.total_nano_seconds() == 1_250_000_000
+
+    actual = from_seconds(-1.25)
+    assert actual.total_seconds() == -1.25
+    assert actual.total_nano_seconds() == -1_250_000_000
+
+
+def test_from_milli_seconds():
+    actual = from_milli_seconds(1.5)
+    assert actual.total_milli_seconds() == 1.5
+    assert actual.total_nano_seconds() == 1_500_000
+
+    actual = from_milli_seconds(-1.5)
+    assert actual.total_milli_seconds() == -1.5
+    assert actual.total_nano_seconds() == -1_500_000
 
 
 class TestTimeSpan:
