@@ -2,4 +2,4 @@
 target/
 .idea/
 python_packages/
-/__pycache__/
+**/__pycache__/**
