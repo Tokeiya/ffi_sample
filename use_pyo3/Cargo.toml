@@ -9,5 +9,4 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 pyo3 = { version = "*", features = ["extension-module"] }
-polars = "*"
 numpy = "*"
